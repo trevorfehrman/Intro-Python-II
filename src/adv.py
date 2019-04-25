@@ -73,7 +73,11 @@ while True:
         s = s[0][0]
         if s == 'q':
             break
-        player.set_current_room(try_direction(s, player.current_room))
+        elif s == 'i':
+            for item in player.inventory:
+                print(f"What you're carrying:'{item.name}")
+        else:
+            player.set_current_room(try_direction(s, player.current_room))
         # player.current_room = try_direction(s, player.current_room)
     elif len(s) == 2:
         # * command
@@ -81,19 +85,25 @@ while True:
         second_word = s[1]
         loot_pile = player.current_room.loot
         name_list = [item.name for item in loot_pile]
+        inventory_name_list = [item.name for item in player.inventory]
 
         if first_word in ["get", "take", "drop"]:
-            if first_word == "get" or "take":
+            if first_word == "get" or first_word == "take":
                 if second_word in name_list:
                     for item in loot_pile:
                         if item.name == second_word:
                             player.get_item(item)
                             loot_pile.remove(item)
-                else:
-                    print(f"You don't see a {second_word} here")
-
             elif first_word == "drop":
-                print("droppin it")
+                print("Sanity check")
+                if second_word in inventory_name_list:
+                    for item in player.inventory:
+                        if item.name == second_word:
+                            player.inventory.remove(item)
+                            player.current_room.loot.append(item)
+                else:
+                    print(f"nope")
+
             else:
                 print("something went wrong")
         else:
